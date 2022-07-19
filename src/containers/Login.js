@@ -10,9 +10,10 @@ import * as React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../config/firebase";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 const Login = () => {
-    const [errorMessage, setErrorMessage] = React.useState('');
+  const [errorMessage, setErrorMessage] = React.useState("");
 
   const navigate = useNavigate();
 
@@ -23,14 +24,24 @@ const Login = () => {
     const password = data.get("password");
 
     try {
-        const {user} = await signInWithEmailAndPassword(auth, email, password)
-        // const user = userCredential.user;
-        navigate("/");
+      const { user } = await signInWithEmailAndPassword(auth, email, password);
+      // const user = userCredential.user;
+      navigate("/");
     } catch (error) {
-        const errorMessage = error.message;
-        setErrorMessage(errorMessage);
+      const errorMessage = error.message;
+      setErrorMessage(errorMessage);
     }
+  };
 
+  const forgotPassword = () => {
+    sendPasswordResetEmail(auth, "algonsadewangga@gmail.com")
+      .then(() => {
+        console.log("email sent")
+      })
+      .catch((error) => {
+        console.log(error.message);
+        // ..
+      });
   };
 
   return (
@@ -71,7 +82,9 @@ const Login = () => {
             autoComplete="current-password"
           />
           {/* typography show error message */}
-            <Typography component="h1" variant="h5">{errorMessage}</Typography>
+          <Typography component="h1" variant="h5">
+            {errorMessage}
+          </Typography>
           <Button
             type="submit"
             fullWidth
@@ -83,6 +96,7 @@ const Login = () => {
           <Grid container>
             <Grid item>
               <Link to="/register">{"Don't have an account? Sign Up"}</Link>
+              <Button onClick={forgotPassword}>{"Forgot Password"}</Button>
             </Grid>
           </Grid>
         </Box>

@@ -9,7 +9,7 @@ const Home = () => {
   return (
     <Box sx={{ margin: 10 }}>
       Welcome to Mood Meter! <br />
-      current use is : {user.email}
+      current use is : {user?.email}
     </Box>
   )
 }
